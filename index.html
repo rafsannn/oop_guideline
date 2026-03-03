@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OOP Midterm Prep & Analysis</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Slate (Neutral/Professional), Sky Blue (Primary), Emerald (Success/High Priority), Amber (Warning/Medium), Rose (Danger/Low) -->
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        primary: '#0ea5e9',
+                        secondary: '#475569',
+                        dark: '#0f172a',
+                        light: '#f8fafc',
+                        high: '#10b981',
+                        med: '#f59e0b',
+                        low: '#64748b'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* CSS resets and custom scrollbar */
+        body { background-color: #f8fafc; color: #0f172a; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Chart Container Styling - Critical for responsiveness */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container { height: 350px; }
+        }
+
+        /* Interactive Elements */
+        .tab-btn.active {
+            border-bottom: 2px solid #0ea5e9;
+            color: #0ea5e9;
+            font-weight: 600;
+        }
+        .roadmap-line {
+            position: absolute;
+            left: 1.25rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #e2e8f0;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body class="flex flex-col md:flex-row min-h-screen">
+
+    <!-- Sidebar Navigation -->
+    <nav class="w-full md:w-64 bg-white border-r border-slate-200 p-6 flex flex-col shrink-0 md:h-screen sticky top-0 z-20 shadow-sm md:shadow-none">
+        <div class="mb-8 flex items-center gap-3">
+            <div class="w-8 h-8 rounded bg-primary text-white flex items-center justify-center font-bold text-xl">
+                &#10004; <!-- Checkmark Unicode -->
+            </div>
+            <h1 class="text-xl font-bold text-slate-800 leading-tight">OOP Prep<br><span class="text-sm font-normal text-slate-500">Analysis Hub</span></h1>
+        </div>
+        
+        <div class="flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-visible pb-2 md:pb-0">
+            <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn active text-left px-4 py-3 rounded hover:bg-slate-50 transition-colors whitespace-nowrap md:whitespace-normal flex items-center gap-2">
+                <span>&#128202;</span> Phase 1 & 5: Strategy
+            </button>
+            <button onclick="switchTab('mapping')" id="tab-mapping" class="tab-btn text-left px-4 py-3 rounded hover:bg-slate-50 transition-colors whitespace-nowrap md:whitespace-normal flex items-center gap-2">
+                <span>&#128214;</span> Phase 2 & 3: Syllabus Map
+            </button>
+            <button onclick="switchTab('roadmap')" id="tab-roadmap" class="tab-btn text-left px-4 py-3 rounded hover:bg-slate-50 transition-colors whitespace-nowrap md:whitespace-normal flex items-center gap-2">
+                <span>&#128640;</span> Phase 4: Roadmap
+            </button>
+        </div>
+
+        <!-- External Links Section -->
+        <div class="mt-auto pt-6 border-t border-slate-100 space-y-3">
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Resources</p>
+            <a href="https://notebooklm.google.com/notebook/62c52050-21b3-4e21-9f96-bcbf1ff53068" target="_blank" class="w-full flex items-center gap-2 px-4 py-2 bg-slate-50 text-slate-700 text-sm rounded-lg hover:bg-sky-50 hover:text-sky-700 transition-all border border-slate-200">
+                <span>📔</span> NotebookLM
+            </a>
+            <a href="https://drive.google.com/drive/folders/1l_3CcDEdXzQkcWQqSTJkNC5IA3f-EoQE?usp=sharing" target="_blank" class="w-full flex items-center gap-2 px-4 py-2 bg-slate-50 text-slate-700 text-sm rounded-lg hover:bg-sky-50 hover:text-sky-700 transition-all border border-slate-200">
+                <span>📁</span> Materials
+            </a>
+            
+            <!-- Minimal Attribution -->
+            <div class="pt-4 text-[10px] text-slate-400 font-medium">
+                Developed by Rafsan
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full">
+
+        <!-- DASHBOARD (Phases 1 & 5) -->
+        <section id="sec-dashboard" class="block animate-fade-in">
+            <header class="mb-8">
+                <h2 class="text-3xl font-bold text-dark">Exam Pattern & Strategy Analysis</h2>
+                <p class="text-secondary mt-2">Data-driven insights extracted from past midterms and lecture alignments.</p>
+            </header>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <!-- Chart 1: Question Type Distribution -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-lg font-semibold mb-4 text-center">Question Type Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="qTypeChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 2: High-Frequency Topics -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-lg font-semibold mb-4 text-center">Topic Frequency in Past Papers</h3>
+                    <div class="chart-container">
+                        <canvas id="topicFreqChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phase 5: Examiner Strategy -->
+            <div class="bg-slate-800 text-white p-8 rounded-xl shadow-md">
+                <h3 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                    <span>&#127919;</span> Phase 5: Examiner-Oriented Strategy
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-slate-700/50 p-5 rounded-lg border border-slate-600">
+                        <h4 class="font-semibold text-primary mb-2">Coding vs Theory Ratio</h4>
+                        <p class="text-slate-300 text-sm">The instructor heavily emphasizes <strong>applied coding</strong>. While theory (definitions, differences) is asked (e.g., "What is inheritance?", "Primitive vs Non-primitive"), the bulk of marks relies on writing full classes (e.g., `Student`, `CD` classes) and methods based on specific constraints.</p>
+                    </div>
+                    <div class="bg-slate-700/50 p-5 rounded-lg border border-slate-600">
+                        <h4 class="font-semibold text-primary mb-2">Output & Dry-Run Prominence</h4>
+                        <p class="text-slate-300 text-sm">Output prediction is <strong>highly common</strong>. You must be able to trace constructors (e.g., the `Puppy` and `Student` constructor questions) and understand string concatenations and scanner inputs during runtime.</p>
+                    </div>
+                    <div class="bg-slate-700/50 p-5 rounded-lg border border-slate-600">
+                        <h4 class="font-semibold text-primary mb-2">OOP Pillars Deep-Dive</h4>
+                        <p class="text-slate-300 text-sm"><strong>Inheritance</strong> is frequently tested both theoretically (class diagrams) and practically. <strong>Encapsulation</strong> (access specifiers) is tested. Abstraction/Polymorphism are in the lecture sheets but appeared slightly less explicitly in the provided paper snippets compared to basic class/object creation.</p>
+                    </div>
+                    <div class="bg-slate-700/50 p-5 rounded-lg border border-slate-600 border-l-4 border-l-rose-500">
+                        <h4 class="font-semibold text-rose-400 mb-2">Out-of-Syllabus Warning</h4>
+                        <p class="text-slate-300 text-sm">Basic Java structures (Loops, `Scanner`, Primitive data types) are expected knowledge. They appear in exams (e.g., separating digits, printing strings 9 times) but are <strong>Not in Current OOP Lecture Syllabus</strong>. Review them independently.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SYLLABUS & BOOK MAPPING (Phases 2 & 3) -->
+        <section id="sec-mapping" class="hidden animate-fade-in">
+            <header class="mb-8">
+                <h2 class="text-3xl font-bold text-dark">Knowledge Mapping Base</h2>
+                <p class="text-secondary mt-2">Strict alignment of Topics -> Lecture Slides -> Reference Book (Herbert Schildt 5th Ed).</p>
+            </header>
+
+            <!-- Filters -->
+            <div class="mb-6 flex gap-4">
+                <button onclick="filterTable('all')" class="px-4 py-2 bg-slate-200 text-sm rounded-full hover:bg-slate-300 font-medium transition">All Topics</button>
+                <button onclick="filterTable('high')" class="px-4 py-2 bg-emerald-100 text-emerald-800 text-sm rounded-full hover:bg-emerald-200 font-medium transition">🔴 High Priority</button>
+                <button onclick="filterTable('med')" class="px-4 py-2 bg-amber-100 text-amber-800 text-sm rounded-full hover:bg-amber-200 font-medium transition">🟡 Med Priority</button>
+                <button onclick="filterTable('orphan')" class="px-4 py-2 bg-rose-100 text-rose-800 text-sm rounded-full hover:bg-rose-200 font-medium transition">⚠️ Extracurricular / Assumed</button>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200">
+                            <th class="p-4 font-semibold text-sm text-slate-600 w-1/4">Topic Name</th>
+                            <th class="p-4 font-semibold text-sm text-slate-600 w-1/4">Phase 2: Lecture Mapping</th>
+                            <th class="p-4 font-semibold text-sm text-slate-600 w-1/4">Phase 3: Book Mapping (Herbert Schildt)</th>
+                            <th class="p-4 font-semibold text-sm text-slate-600">Context</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mapping-tbody" class="divide-y divide-slate-100">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ROADMAP (Phase 4) -->
+        <section id="sec-roadmap" class="hidden animate-fade-in">
+            <header class="mb-8">
+                <h2 class="text-3xl font-bold text-dark">Sequential Study Roadmap</h2>
+                <p class="text-secondary mt-2">Logical progression based on the conceptual flow of the official lecture sheets.</p>
+            </header>
+
+            <div class="relative pl-8 md:pl-0 max-w-4xl mx-auto mt-10">
+                <!-- Vertical Line -->
+                <div class="roadmap-line md:left-1/2 md:-ml-[1px]"></div>
+
+                <!-- Roadmap Items will be injected by JS -->
+                <div id="roadmap-container" class="space-y-12"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Data Storage
+        const topicData = [
+            {
+                id: 1,
+                priority: "orphan", 
+                name: "Basic Java I/O & Loops",
+                lecture: "N/A (Previously Asked but Not in Current Lecture Syllabus)",
+                lectureDetails: "Not present in provided slides.",
+                book: "Ch 3 (Data Types), Ch 5 (Control Statements)",
+                bookDetails: "Code-example-heavy (Assumed prerequisite)",
+                context: "Output prediction (Loops), Primitive vs Non-primitive, Scanner input.",
+                priorityLabel: "Extracurricular"
+            },
+            {
+                id: 2,
+                priority: "high",
+                name: "Intro to OOP (Class vs Object, Pillars)",
+                lecture: "1_Lesson 1.1 (Intro to OOP)",
+                lectureDetails: "Slides 10-14. Concept explanation.",
+                book: "Chapter 6: Classes",
+                bookDetails: "Page 109-111. Concept & Code-heavy.",
+                context: "Theory (Definitions, Differences), Writing basic classes with instance variables.",
+                priorityLabel: "🔴 High Priority"
+            },
+            {
+                id: 3,
+                priority: "med",
+                name: "Access Modifiers",
+                lecture: "2_1.1 Introduction",
+                lectureDetails: "Slides 13-16. Code examples included.",
+                book: "Chapter 7: Methods and Classes",
+                bookDetails: "Page 142. Rule-based explanation.",
+                context: "Short theory questions (e.g., 'What are the various access specifiers?').",
+                priorityLabel: "🟡 Med Priority"
+            },
+            {
+                id: 4,
+                priority: "high",
+                name: "Constructors & Object Creation",
+                lecture: "2_3.2 OOP Class 3",
+                lectureDetails: "Slides 2-4. Concept + Code examples. Also covers finalize().",
+                book: "Chapter 6: Classes",
+                bookDetails: "Page 119, 122. Concept & Code-heavy.",
+                context: "Output prediction (Constructors trace), Full program writing.",
+                priorityLabel: "🔴 High Priority"
+            },
+            {
+                id: 5,
+                priority: "high",
+                name: "Inheritance",
+                lecture: "2_3.1 Inheritance (2)",
+                lectureDetails: "Slides 2-4. Definitions, 'extends', Types of Inheritance.",
+                book: "Chapter 8: Inheritance",
+                bookDetails: "Page 162. Concept-heavy.",
+                context: "Theory definitions, Drawing Class Diagrams, Code implementation.",
+                priorityLabel: "🔴 High Priority"
+            },
+            {
+                id: 6,
+                priority: "high",
+                name: "Polymorphism (Overriding vs Overloading)",
+                lecture: "4_Polymorphism",
+                lectureDetails: "Slides 2-5, 12. Compile-time vs Runtime.",
+                book: "Chapter 7 (Overloading p.129), Chapter 8 (Overriding p.174)",
+                bookDetails: "Code-example-heavy.",
+                context: "Output prediction (Dynamic method dispatch).",
+                priorityLabel: "🔴 High Priority"
+            },
+            {
+                id: 7,
+                priority: "med",
+                name: "Abstraction",
+                lecture: "3_2.1 Abstraction",
+                lectureDetails: "Slides 3-8. Abstract methods and classes.",
+                book: "Chapter 8: Inheritance",
+                bookDetails: "Page 177. Concept & Code.",
+                context: "Theory (Encapsulation vs Abstraction), Code snippets.",
+                priorityLabel: "🟡 Med Priority"
+            },
+            {
+                id: 8,
+                priority: "med",
+                name: "Interfaces",
+                lecture: "3_1.2 Interface",
+                lectureDetails: "Slides 2-6, 19. Abstract class vs Interface.",
+                book: "Chapter 9: Packages and Interfaces",
+                bookDetails: "Page 192. Rule-based.",
+                context: "Short theory, Differences.",
+                priorityLabel: "🟡 Med Priority"
+            }
+        ];
+
+        // Core Interaction Handling & Functional Navigation
+        function switchTab(tabId) {
+            document.getElementById('sec-dashboard').classList.add('hidden');
+            document.getElementById('sec-mapping').classList.add('hidden');
+            document.getElementById('sec-roadmap').classList.add('hidden');
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('sec-' + tabId).classList.remove('hidden');
+            document.getElementById('tab-' + tabId).classList.add('active');
+            if(tabId === 'dashboard') renderCharts();
+        }
+
+        function renderTable(filter = 'all') {
+            const tbody = document.getElementById('mapping-tbody');
+            tbody.innerHTML = '';
+            let filteredData = filter === 'all' ? topicData : topicData.filter(item => item.priority === filter);
+
+            filteredData.forEach(item => {
+                let badgeClass = "bg-slate-100 text-slate-800";
+                if(item.priority === 'high') badgeClass = "bg-emerald-100 text-emerald-800";
+                if(item.priority === 'med') badgeClass = "bg-amber-100 text-amber-800";
+                if(item.priority === 'orphan') badgeClass = "bg-rose-100 text-rose-800";
+
+                const row = `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="p-4 align-top">
+                            <span class="inline-block px-2 py-1 rounded text-xs font-semibold mb-2 ${badgeClass}">${item.priorityLabel}</span>
+                            <div class="font-semibold text-slate-800">${item.name}</div>
+                        </td>
+                        <td class="p-4 align-top text-sm">
+                            <div class="font-medium text-primary">${item.lecture}</div>
+                            <div class="text-slate-500 mt-1">${item.lectureDetails}</div>
+                        </td>
+                        <td class="p-4 align-top text-sm">
+                            <div class="font-medium text-slate-700">${item.book}</div>
+                            <div class="text-slate-500 mt-1">${item.bookDetails}</div>
+                        </td>
+                        <td class="p-4 align-top text-sm text-slate-600">${item.context}</td>
+                    </tr>
+                `;
+                tbody.insertAdjacentHTML('beforeend', row);
+            });
+        }
+
+        function filterTable(type) { renderTable(type); }
+
+        function renderRoadmap() {
+            const container = document.getElementById('roadmap-container');
+            container.innerHTML = '';
+            const order = [1, 2, 4, 3, 5, 6, 7, 8]; 
+            
+            order.forEach((id, index) => {
+                const item = topicData.find(t => t.id === id);
+                if(!item) return;
+                const isLeft = index % 2 === 0;
+                let dotColor = "bg-slate-400", borderColor = "border-slate-200";
+                if(item.priority === 'high') { dotColor = "bg-emerald-500"; borderColor = "border-emerald-200"; }
+                if(item.priority === 'med') { dotColor = "bg-amber-500"; borderColor = "border-amber-200"; }
+                if(item.priority === 'orphan') { dotColor = "bg-rose-500"; borderColor = "border-rose-200"; }
+
+                const html = `
+                    <div class="relative flex flex-col md:flex-row items-center justify-between w-full">
+                        <div class="hidden md:block w-5/12 ${isLeft ? 'text-right pr-8' : 'order-last pl-8'}">
+                            <div class="bg-white p-5 rounded-lg shadow-sm border ${borderColor}">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Step ${index + 1}</div>
+                                <h4 class="text-lg font-bold text-slate-800">${item.name}</h4>
+                                <p class="text-sm text-slate-500 mt-2"><strong>Lecture:</strong> ${item.lecture}</p>
+                                <p class="text-sm text-slate-500"><strong>Book:</strong> ${item.book}</p>
+                            </div>
+                        </div>
+                        <div class="absolute left-5 md:left-1/2 md:-ml-3 w-6 h-6 rounded-full border-4 border-white shadow-sm z-10 flex-shrink-0 ${dotColor}"></div>
+                        <div class="md:hidden w-full pl-14 pb-8">
+                            <div class="bg-white p-5 rounded-lg shadow-sm border ${borderColor}">
+                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Step ${index + 1}</div>
+                                <h4 class="text-lg font-bold text-slate-800">${item.name}</h4>
+                                <p class="text-sm text-slate-500 mt-2"><strong>Lecture:</strong> ${item.lecture}</p>
+                                <p class="text-sm text-slate-500"><strong>Book:</strong> ${item.book}</p>
+                            </div>
+                        </div>
+                        <div class="hidden md:block w-5/12"></div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        let chartInstance1 = null, chartInstance2 = null;
+
+        function renderCharts() {
+            if (chartInstance1) chartInstance1.destroy();
+            if (chartInstance2) chartInstance2.destroy();
+
+            const ctx1 = document.getElementById('qTypeChart').getContext('2d');
+            chartInstance1 = new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Full Program Coding', 'Output Prediction', 'Short Theory', 'Definitions/Diagrams'],
+                    datasets: [{
+                        data: [45, 25, 15, 15],
+                        backgroundColor: ['#0ea5e9', '#10b981', '#f59e0b', '#64748b'],
+                        borderWidth: 0
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+            });
+
+            const ctx2 = document.getElementById('topicFreqChart').getContext('2d');
+            chartInstance2 = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['Class/Obj', 'Constructors', 'Inheritance', 'Polymorphism', 'Loops/I/O'],
+                    datasets: [{
+                        label: 'Frequency indicator',
+                        data: [5, 4, 3, 2, 3],
+                        backgroundColor: '#0ea5e9',
+                        borderRadius: 4
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } }, plugins: { legend: { display: false } } }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTable();
+            renderRoadmap();
+            renderCharts();
+        });
+    </script>
+</body>
+</html>
